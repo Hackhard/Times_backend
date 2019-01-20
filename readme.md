@@ -9,4 +9,6 @@
 
 ## Based on Laravel
 
-Made with ♥ 
+Support's the backend of THT APP, can be used to Read, Write, Edit, Delete posts created by users.
+<br><br>
+               <p>Made with :smiley::sparkling_heart:</p>
