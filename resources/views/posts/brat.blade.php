@@ -7,7 +7,7 @@
             <div class="well well-sm">
                 <div class="row">
                     <div class="col-md-4 col-sm-4">
-                        <img style="width:100%;height:160px;" src="/newapp/storage/app/public/cover_images/{{$post->c_image}}">
+                        <img style="width:100%;height:170px;" src="/newapp/storage/app/public/cover_images/{{$post->c_image}}">
                     </div>
                     <div class="col-md-8 col-sm-8">
                         <h4>{{$post->id}})<strong>{{$post->title}}</strong></h4>
