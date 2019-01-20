@@ -9,6 +9,15 @@ use DB;
 class PostsController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth',['except'=>['show','index']]);
+    }
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -46,15 +55,31 @@ class PostsController extends Controller
         $this->validate($request,[
             'title'=>'required',
             'description'=>'required',
-            'body'=>'required'
+            'body'=>'required',
+            'c_image' => 'image|nullable|max:1999'
         ]);
         
+        if($request->hasFile('c_image')){
+            // Get filename with the extension
+            $filenameWithExt = $request->file('c_image')->getClientOriginalName();
+            // Get just filename
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // Get just ext
+            $extension = $request->file('c_image')->getClientOriginalExtension();
+            // Filename to store
+            $fileNameToStore= $filename.'_'.time().'.'.$extension;
+            // Upload Image
+            $path = $request->file('c_image')->storeAs('public/cover_images', $fileNameToStore);
+        } else {
+            $fileNameToStore = 'noimage.jpg';
+        }
         ///////////////////////////////////////////////////
         $post = new Post;
         $post->title=$request->input('title');
         $post->description=$request->input('description');
         $post->body=$request->input('body');
         $post->dropdown=$request->input('dropdown');
+        $post->c_image = $fileNameToStore;
         //////////////////////////////////////////////////
        /* $logo=$request->file('image');
         $upload='uploads/logo';
@@ -110,12 +135,28 @@ class PostsController extends Controller
             'body'=>'required'
         ]);
         
+        if($request->hasFile('c_image')){
+            // Get filename with the extension
+            $filenameWithExt = $request->file('c_image')->getClientOriginalName();
+            // Get just filename
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // Get just ext
+            $extension = $request->file('c_image')->getClientOriginalExtension();
+            // Filename to store
+            $fileNameToStore= $filename.'_'.time().'.'.$extension;
+            // Upload Image
+            $path = $request->file('c_image')->storeAs('public/cover_images', $fileNameToStore);
+        }
         ///////////////////////////////////////////////////
         $post = Post::find($id);
         $post->title=$request->input('title');
         $post->description=$request->input('description');
         $post->body=$request->input('body');
         $post->dropdown=$request->input('dropdown');
+        if($request->hasFile('c_image'))
+        {
+            $post->c_image = $fileNameToStore;
+        }
 
         $post->save();
         return redirect('/posts/1/brat/')->with('success','Post updated!');
@@ -131,5 +172,8 @@ class PostsController extends Controller
     public function destroy($id)
     {
         //
+        $post = Post::find($id);
+        $post->delete();
+        return redirect('/posts/1/brat/')->with('success','Post deleted!');
     }
 }

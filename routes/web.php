@@ -29,3 +29,7 @@ Route::get('/about', 'PagesController@about');
 
 Route::resource('posts','PostsController');
 Route::resource('posts.brat','PostssController');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/newapp/public/posts/create', 'HomeController@index')->name('post');

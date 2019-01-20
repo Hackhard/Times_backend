@@ -9,6 +9,15 @@ use DB;
 class PostssController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth',['except'=>['show','index']]);
+    }
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -37,18 +46,42 @@ class PostssController extends Controller
         $this->validate($request,[
             'title'=>'required',
             'description'=>'required',
-            'body'=>'required'
+            'body'=>'required',
+            //'image'=>'image|nullable|1999'
         ]);
-        
+        /*if($request->hasFile('image')){
+            //get filename with extension
+            $fileNameWithExt = $request->file('image')->getClientOriginalName();
+            //get just filename
+            $filename= pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+            //get ext
+            $extension = $request->file('image')->getClientOriginalExtension();
+            //file to store
+            $fileNameToStore = $filename.'_'.time().'.'.$extension;
+            //upload image
+            $path = $request->file('image')->storeAs('public/cover_images',$fileNameToStore);
+    }
+    else
+    {
+        $fileNameToStore ='noimage.jpg';
+    }/** */
         ///////////////////////////////////////////////////
         $post = Post::find($id);
         $post->title=$request->input('title');
         $post->description=$request->input('description');
         $post->body=$request->input('body');
         $post->dropdown=$request->input('dropdown');
+       // $post->image = $fileNameToStore;
 
         $post->save();
         return redirect('/posts/1/brat/')->with('success','Post updated!');
         
+    }
+    public function destroy($id)
+    {
+        //
+        $post = Post::find($id);
+        $post->delete;
+        return redirect('/posts/1/brat/')->with('success','Post deleted!');
     }
 }
